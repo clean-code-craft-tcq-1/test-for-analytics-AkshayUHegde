@@ -1,8 +1,6 @@
 # Test for Analytics
 
-Design tests for Analytics functionality on a Battery Monitoring System.
-
-Fill the parts marked '_enter' in the **Tasks** section below.
+Test design for Analytics functionality on a Battery Monitoring System.
 
 ## Analysis-functionality to be tested
 
@@ -22,54 +20,43 @@ Notification must be sent when a new report is available.
 
 ## Tasks
 
-### List Dependencies
-
-List the dependencies of the Analysis-functionality.
+### Analytics software dependencies
 
 1. Access to the Server containing the telemetrics in a csv file
-1. _enter dependency
-1. _enter dependency
+1. Generation of a PDF report from the analytics output
+1. Notification delivery mechanism
+1. Thresholds for different parameters of the Battery Management System
 
-(add more if needed)
 
-### Mark the System Boundary
-
-What is included in the software unit-test? What is not? Fill this table.
+### System boundaries
 
 | Item                      | Included?     | Reasoning / Assumption
 |---------------------------|---------------|---
-Battery Data-accuracy       | No            | We do not test the accuracy of data
-Computation of maximum      | Yes           | This is part of the software being developed
-Off-the-shelf PDF converter | _enter Yes/No | _enter reasoning
-Counting the breaches       | _enter Yes/No | _enter reasoning
-Detecting trends            | _enter Yes/No | _enter reasoning
-Notification utility        | _enter Yes/No | _enter reasoning
+Battery Data-accuracy       | No            | Data accuracy is out of scope
+Computation of maximum      | Yes           | Part of the software requirements
+Off-the-shelf PDF converter | No            | PDF write trigger mocked. PDF output not tested.
+Counting the breaches       | Yes           | Part of the software requirements
+Detecting trends            | Yes           | Part of the software requirements
+Notification utility        | No            | Notification trigger mocked. Mechanism not tested.
 
-### List the Test Cases
+### Test cases
 
-Write tests in the form of `<expected output or action>` from `<input>` / when `<event>`
+1. Generate "Invalid input" output when the csv doesn't contain expected data
+1. Generate "Server Inaccessible" output when the csv is not available on the server
+1. Calculate minimum and maximum readings from a csv containing positive and negative readings
+1. Calculate count of breaches to count instances when the readings from a csv cross the max/min thresholds
+1. Make a dictionary of trends when the readings from a csv monotonically increase for 30 minutes
+1. Trigger notification once a new PDF report is generated
+1. Trigger write to the PDF once a python data report is available
 
-Add to these tests:
+### Fakes and Reality
 
-1. Write minimum and maximum to the PDF from a csv containing positive and negative readings
-1. Write "Invalid input" to the PDF when the csv doesn't contain expected data
-1. _enter a test
-1. _enter a test
-
-(add more)
-
-### Recognize Fakes and Reality
-
-Consider the tests for each functionality below.
-In those tests, identify inputs and outputs.
-Enter one part that's real and another part that's faked/mocked.
-
-| Functionality            | Input        | Output                      | Faked/mocked part
-|--------------------------|--------------|-----------------------------|---
-Read input from server     | csv file     | internal data-structure     | Fake the server store
-Validate input             | csv data     | valid / invalid             | None - it's a pure function
-Notify report availability | _enter input | _enter output               | _enter fake or mock
-Report inaccessible server | _enter input | _enter output               | _enter fake or mock
-Find minimum and maximum   | _enter input | _enter output               | _enter fake or mock
-Detect trend               | _enter input | _enter output               | _enter fake or mock
-Write to PDF               | _enter input | _enter output               | _enter fake or mock
+| Functionality            | Input                            | Output                   | Faked/mocked part
+|--------------------------|----------------------------------|--------------------------|-----------------------------
+Read input from server     | csv file                         | internal data-structure  | Fake the server store
+Validate input             | csv data                         | valid / invalid          | None - it's a pure function
+Notify report availability | report generated / not generated | notified / not notified  | Mock the notification trigger
+Report inaccessible server | server path                      | accessible / inaccessible| Fake the server store
+Find minimum and maximum   | readings data-structure          | minimum, maximum values  | None - it's a pure function
+Detect trend               | readings data-structure          | data-structure of trends | None - it's a pure function
+Write to PDF               | output data-structure            | PDF file                 | Mock the PDF write function
